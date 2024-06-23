@@ -2,11 +2,12 @@ package server
 
 import (
 	"flag"
+	"fmt"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/mjaliz/videochat/internal/handlers"
 	"os"
 	"time"
+	"videochat/internal/handlers"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -14,7 +15,7 @@ import (
 )
 
 var (
-	addr = flag.String("addr", ":", os.Getenv("PORT"))
+	addr = flag.String("addr", fmt.Sprintf(":%s", os.Getenv("PORT")), "")
 	cert = flag.String("cert", "", "")
 	key  = flag.String("key", "", "")
 )
@@ -39,7 +40,7 @@ func Run() error {
 		HandshakeTimeout: 20 * time.Second,
 	}))
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))
-	app.Get("/stream/:ssuid", hanlders.Stream)
+	app.Get("/stream/:ssuid", handlers.Stream)
 	app.Get("/stream/:ssuid/websocket")
 	app.Get("/stream/:ssuid/chat/websocket")
 	app.Get("/stream/:ssuid/viewer/websocket")
